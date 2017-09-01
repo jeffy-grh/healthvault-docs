@@ -331,7 +331,7 @@ An example request URL:
 </tbody>
 </table>
 
-For more information about Patient Connect, see <a href="patient-connect" id="PageContent_14089_9">Establishing a connection with a user using Patient Connect</a>.
+For more information about Patient Connect, see <a href="patient-connect.md" id="PageContent_14089_9">Establishing a connection with a user using Patient Connect</a>.
 
 ### CREATEACCOUNT
 
