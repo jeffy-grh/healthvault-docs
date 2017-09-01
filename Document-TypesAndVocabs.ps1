@@ -1411,7 +1411,7 @@ Function md-VocabLink($vocab, $ignoreVersion) {
 
 Function md-ThingLink($thing, $ignoreVersion) {
     $filePath = if ($thing.DotNetClassInfo.IsOld) {$dtOldPath} else {$dtPath}
-    $path = "/$($filePath -replace "\\","/")/$($thing.FilenamePrefix)"
+    $path = "/$($filePath -replace "\\","/")/$($thing.MarkdownFilename)"
     $name = $thing.Name
     if ($thing.Version -ne 1 -and !$ignoreVersion) {
         $name += " v$($thing.Version)"
@@ -1434,6 +1434,16 @@ Function md-MethodLink($method, $ignoreVersion) {
     $path = "/$($methodPath -replace "\\","/")/$($method.Name)"
     
     md-Link $name $path
+}
+
+Function FormatFileName($name, $version, $allVersionsOfItem) {
+    $formattedName = $name.ToLowerInvariant() -replace " ","-"
+    $highestVersion = $allVersionsOfItem | Sort-Object {$_.Version} | Select-Object -Last 1
+    if ($version -ne $highestVersion.Version) {
+        $formattedName += ".$version"
+    }
+
+    $formattedName
 }
 
 ### End File Helpers ###
@@ -1510,11 +1520,14 @@ Get-ThingTypeInfos $TypeXmlDir $XsdDir $WebXsdDir
 foreach ($thingInfo in $script:thingTypes.Values) {
     $markdown = Clean-NewLines (New-DataTypeMarkDown $thingInfo "$refPath\sample-xml")
     $destPath = if ($thingInfo.DotNetClassInfo.IsOld) {$dtOldPath} else {$dtPath}
-    New-Item -ItemType File "$destPath\$($thingInfo.FilenamePrefix).md" -Value $markdown -Force:$Overwrite | Out-Null
+    $similarThings = $script:thingTypes.Values | Where-Object {$_.Name -eq $thingInfo.Name}
+    $filename = FormatFileName $thingInfo.Name $thingInfo.Version $similarThings
+    $thingInfo.MarkdownFilename = $filename
+    New-Item -ItemType File "$destPath\$filename.md" -Value $markdown -Force:$Overwrite | Out-Null
 }
 
-$sortedThings = $script:thingTypes.Values | Where-Object{!$_.DotNetClassInfo.IsOld} | Sort-Object {$_.Version -as [string]} | Sort-Object {$_.Name -as [string]}
-$sortedOldThings = $script:thingTypes.Values | Where-Object{$_.DotNetClassInfo.IsOld} | Sort-Object {$_.Version -as [string]} | Sort-Object {$_.Name -as [string]}
+$sortedThings = $script:thingTypes.Values | Where-Object{!$_.DotNetClassInfo.IsOld} | Sort-Object @{Expression={$_.Name};Ascending=$true},@{Expression={$_.Version};Descending=$true}
+$sortedOldThings = $script:thingTypes.Values | Where-Object{$_.DotNetClassInfo.IsOld} | Sort-Object @{Expression={$_.Name};Ascending=$true},@{Expression={$_.Version};Descending=$true}
 $indexThings = "# DataTypes`n" +
                 (md-Link "Old DataTypes" "old/") +
                 (md-TableHeader "Name","Version","ID","Description") +
