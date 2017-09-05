@@ -40,7 +40,7 @@ Next, read about <a href="technical-overview-applications.md" id="Introduction_1
 #### Technical overview
 
 -   <a href="/healthvault/introduction/technical-overview" id="RightRailLinkListSection_14104_13"><strong>1. Terminology</strong></a>
--   <a href="/healthvault/introduction/technical-overview-applications.md" id="RightRailLinkListSection_14104_19">2. Applications</a>
+-   <a href="/healthvault/introduction/technical-overview-applications" id="RightRailLinkListSection_14104_19">2. Applications</a>
 -   <a href="/healthvault/introduction/technical-overview-permissions" id="RightRailLinkListSection_14104_14">3. Permissions</a>
 -   <a href="/healthvault/introduction/technical-overview-connectivity" id="RightRailLinkListSection_14104_15">4. Connectivity</a>
 -   <a href="/healthvault/introduction/technical-overview-exchanging-data" id="RightRailLinkListSection_14104_16">5. Exchanging data</a>
